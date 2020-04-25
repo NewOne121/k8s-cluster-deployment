@@ -148,5 +148,5 @@ cfssl gencert \
 #Distribute keys across cluster (server/worker)
 for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
 do
-	scp ${CERTS_DIR}/CA/ca.pem ${NODE} ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:/
+	scp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:/
 done
