@@ -19,12 +19,17 @@ then
 fi
 
 #The cfssl and cfssljson command line utilities will be used to provision a PKI Infrastructure and generate TLS certificates.
-wget -q --timestamping \
+if [ ! -f cfssl ];
+then
+	wget -q --timestamping \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssl \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssljson
-chmod +x cfssl cfssljson
-sudo mv cfssl cfssljson /usr/local/bin/\
-&& echo "cfssl successfully installed"
+	chmod +x cfssl cfssljson
+	mv cfssl cfssljson /usr/local/bin/\
+	&& echo "cfssl successfully installed"
+else
+	echo "cfssl already installed"
+fi
 
 #Setup DNS/SSH over cluster nodes
 for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes);
