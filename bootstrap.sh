@@ -33,7 +33,7 @@ do
 		ADDNODE=$(grep "$NODE" "$GITDIR"/config/k8s_nodes)
 		echo "$ADDNODE" >> /etc/hosts
 	fi
-	ssh-copy-id -i $WORKFOLDER/ssh/k8s-management.pub "$NODE"
+	ssh-copy-id -o StrictHostKeyChecking=no -i $WORKFOLDER/ssh/k8s-management.pub "$NODE"
 done
 
 #Get kubectl
