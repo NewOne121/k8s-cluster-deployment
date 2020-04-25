@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITDIR='/opt/git/github/k8-cluster-deployment'
+GITDIR='/opt/git/github/k8s-cluster-deployment'
 WORKFOLDER='/opt/k8s_bootstrap'
 
 if [ ! -d "$WORKFOLDER" ]
