@@ -34,7 +34,7 @@ do
 		echo "$ADDNODE" >> /etc/hosts
 	fi
 	ssh-copy-id -o StrictHostKeyChecking=no -i $WORKFOLDER/ssh/k8s-management.pub "$NODE"
-	scp "$GITDIR"/config/k8s_nodes "$GITDIR"/scripts/setup-dns.sh $NODE/tmp\
+	scp "$GITDIR"/config/k8s_nodes "$GITDIR"/scripts/setup-dns.sh $NODE:/tmp\
 	&& ssh $NODE "bash /tmp/setup-dns.sh"
 done
 
