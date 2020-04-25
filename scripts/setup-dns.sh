@@ -7,6 +7,6 @@ do
 		ADDNODE=$(grep "$NODE" /tmp/k8s_nodes)
 		echo "$ADDNODE" >> /etc/hosts
 	fi
-	nc -vz $NODE 22\
+	nc -vz $NODE 22 > /dev/null 2>&1\
 	&& echo "SSH Connection to node $NODE established"
 done
