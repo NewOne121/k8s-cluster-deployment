@@ -59,7 +59,7 @@ fi
 ###Certs time!
 #Certificate Authority
 CERTS_DIR="$WORKFOLDER/certs"
-cp -r ${GITDIR}/certs ${CERTS_DIR}
+cp -r ${GITDIR}/certs/* ${CERTS_DIR}/
 
 cd ${CERTS_DIR}/CA\
 && cfssl gencert -initca ca-csr.json | cfssljson -bare ca
