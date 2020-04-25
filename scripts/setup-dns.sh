@@ -8,5 +8,5 @@ do
 		echo "$ADDNODE" >> /etc/hosts
 	fi
 	nc -vz $NODE 22 > /dev/null 2>&1\
-	&& echo "SSH Connection to node $NODE established"
+	&& echo "SSH Connection from $(echo $HOSTNAME) to node $NODE established"
 done
