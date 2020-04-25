@@ -106,3 +106,47 @@ cfssl gencert \
   -profile=kubernetes \
   ${NODE}-csr.json | cfssljson -bare ${NODE}
 done
+
+#Controller Manager Client Certificate
+cd ${CERTS_DIR}/controller-manager\
+&& cfssl gencert \
+  -ca=${CERTS_DIR}/CA/ca.pem \
+  -ca-key=${CERTS_DIR}/CA/ca-key.pem \
+  -config=${CERTS_DIR}/CA/ca-config.json \
+  -profile=kubernetes \
+  kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
+
+#Kube proxy certificate
+cd ${CERTS_DIR}/kube-scheduler\
+&& cfssl gencert \
+  -ca=${CERTS_DIR}/CA/ca.pem \
+  -ca-key=${CERTS_DIR}/CA/ca-key.pem \
+  -config=${CERTS_DIR}/CA/ca-config.json \
+  -profile=kubernetes \
+  kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+
+#Kubernetes API server
+KUBERNETES_PUBLIC_ADDRESS='10.0.0.99,10.0.3.15,10.0.0.1'
+KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
+
+cfssl gencert \
+  -ca=${CERTS_DIR}/CA/ca.pem \
+  -ca-key=${CERTS_DIR}/CA/ca-key.pem \
+  -config=${CERTS_DIR}/CA/ca-config.json \
+  -hostname=${KUBERNETES_PUBLIC_ADDRESS},127.0.0.1,${KUBERNETES_HOSTNAMES} \
+  -profile=kubernetes \
+  kube-apiserver-csr.json | cfssljson -bare kubernetes
+
+#Service accounts keypair
+cfssl gencert \
+  -ca=${CERTS_DIR}/CA/ca.pem \
+  -ca-key=${CERTS_DIR}/CA/ca-key.pem \
+  -config=${CERTS_DIR}/CA/ca-config.json \
+  -profile=kubernetes \
+  kube-service-accounts-csr.json | cfssljson -bare service-account
+
+#Distribute keys across cluster (server/worker)
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+do
+	scp ${CERTS_DIR}/CA/ca.pem ${NODE} ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:/
+done
