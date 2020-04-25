@@ -25,7 +25,7 @@ wget -q --show-progress --https-only --timestamping \
 chmod +x cfssl cfssljson
 sudo mv cfssl cfssljson /usr/local/bin/
 
-#Setup DNS
+#Setup DNS/SSH over cluster nodes
 for NODE in $(awk -F ' ' '{print $2}' "$GITDIR"/config/k8s_nodes);
 do
 	if [ ! "$(grep "$NODE" /etc/hosts )" ];
@@ -34,6 +34,8 @@ do
 		echo "$ADDNODE" >> /etc/hosts
 	fi
 	ssh-copy-id -o StrictHostKeyChecking=no -i $WORKFOLDER/ssh/k8s-management.pub "$NODE"
+	scp "$GITDIR"/config/k8s_nodes "$GITDIR"/scripts/setup-dns.sh $NODE/tmp\
+	&& ssh $NODE "bash /tmp/setup-dns.sh"
 done
 
 #Get kubectl
