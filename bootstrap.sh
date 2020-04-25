@@ -26,7 +26,7 @@ chmod +x cfssl cfssljson
 sudo mv cfssl cfssljson /usr/local/bin/
 
 #Setup DNS/SSH over cluster nodes
-for NODE in $(awk -F ' ' '{print $2}' "$GITDIR"/config/k8s_nodes);
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes);
 do
 	if [ ! "$(grep "$NODE" /etc/hosts )" ];
 	then
