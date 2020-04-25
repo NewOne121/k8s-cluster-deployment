@@ -23,7 +23,8 @@ wget -q --timestamping \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssl \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssljson
 chmod +x cfssl cfssljson
-sudo mv cfssl cfssljson /usr/local/bin/
+sudo mv cfssl cfssljson /usr/local/bin/\
+&& echo "cfssl successfully installed"
 
 #Setup DNS/SSH over cluster nodes
 for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes);
