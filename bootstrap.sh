@@ -19,7 +19,7 @@ then
 fi
 
 #The cfssl and cfssljson command line utilities will be used to provision a PKI Infrastructure and generate TLS certificates.
-wget -q --show-progress --https-only --timestamping \
+wget -q --timestamping \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssl \
   https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/linux/cfssljson
 chmod +x cfssl cfssljson
