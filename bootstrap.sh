@@ -126,6 +126,7 @@ cd ${CERTS_DIR}/kube-scheduler\
   kube-scheduler-csr.json | cfssljson -bare kube-scheduler
 
 #Kubernetes API server
+cd ${CERTS_DIR}/kube-apiserver
 KUBERNETES_PUBLIC_ADDRESS='10.0.0.99,10.0.3.15,10.0.0.1'
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
@@ -138,6 +139,8 @@ cfssl gencert \
   kube-apiserver-csr.json | cfssljson -bare kubernetes
 
 #Service accounts keypair
+cd ${CERTS_DIR}/service-accounts
+
 cfssl gencert \
   -ca=${CERTS_DIR}/CA/ca.pem \
   -ca-key=${CERTS_DIR}/CA/ca-key.pem \
@@ -259,6 +262,6 @@ kubectl config use-context default --kubeconfig=${CONF_DIR}/admin.kubeconfig
 #Distribute configs across cluster (server/worker)
 for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
 do
-	scp ${NODE}.kubeconfig kube-proxy.kubeconfig ${NODE}:~/
+	scp ${CONF_DIR}/${NODE}.kubeconfig ${CONF_DIR}/kube-proxy.kubeconfig ${NODE}:~/
 done
 
