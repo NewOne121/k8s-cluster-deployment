@@ -116,7 +116,7 @@ cd ${CERTS_DIR}/controller-manager\
   -profile=kubernetes \
   kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
 
-#Kube proxy certificate
+#Kube scheduler certificate
 cd ${CERTS_DIR}/kube-scheduler\
 && cfssl gencert \
   -ca=${CERTS_DIR}/CA/ca.pem \
@@ -124,6 +124,16 @@ cd ${CERTS_DIR}/kube-scheduler\
   -config=${CERTS_DIR}/CA/ca-config.json \
   -profile=kubernetes \
   kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+
+#Kube proxy certificate
+cd ${CERTS_DIR}/kube-proxy\
+&& cfssl gencert \
+  -ca=${CERTS_DIR}/CA/ca.pem \
+  -ca-key=${CERTS_DIR}/CA/ca-key.pem \
+  -config=${CERTS_DIR}/CA/ca-config.json \
+  -profile=kubernetes \
+  kube-proxy-csr.json | cfssljson -bare kube-proxy
+
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
