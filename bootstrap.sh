@@ -261,3 +261,4 @@ for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${NODE}.kubeconfig kube-proxy.kubeconfig ${NODE}:~/
 done
+
