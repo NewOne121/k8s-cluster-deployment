@@ -176,8 +176,8 @@ for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes); do
     --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
 
   kubectl config set-credentials system:node:${NODE} \
-    --client-certificate=${CERTS_DIR}/kube-apiserver/${NODE}.pem \
-    --client-key=${CERTS_DIR}/kube-apiserver/${NODE}-key.pem \
+    --client-certificate=${CERTS_DIR}/kubelet/${NODE}.pem \
+    --client-key=${CERTS_DIR}/kubelet/${NODE}-key.pem \
     --embed-certs=true \
     --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
 
