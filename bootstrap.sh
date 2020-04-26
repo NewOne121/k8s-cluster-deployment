@@ -148,5 +148,116 @@ cfssl gencert \
 #Distribute keys across cluster (server/worker)
 for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
 do
-	scp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:/
+	scp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:~/
+done
+
+#Generate config for worker nodes
+CONF_DIR="${WORKFOLDER}/conf"
+mkdir -p ${CONF_DIR}
+
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes); do
+  kubectl config set-cluster vi7-kubernetes \
+    --certificate-authority=${CERTS_DIR}/CA/ca.pem \
+    --embed-certs=true \
+    --server=https://10.0.0.1:6443 \
+    --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
+
+  kubectl config set-credentials system:node:${NODE} \
+    --client-certificate=${CERTS_DIR}/kube-apiserver/${NODE}.pem \
+    --client-key=${CERTS_DIR}/kube-apiserver/${NODE}-key.pem \
+    --embed-certs=true \
+    --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
+
+  kubectl config set-context default \
+    --cluster=vi7-kubernetes \
+    --user=system:node:${NODE} \
+    --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
+
+  kubectl config use-context default --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
+done
+
+#Generate kube-proxy config
+kubectl config set-cluster vi7-kubernetes \
+  --certificate-authority=${CERTS_DIR}/CA/ca.pem \
+  --embed-certs=true \
+  --server=https://10.0.0.1:6443 \
+  --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
+
+kubectl config set-credentials system:kube-proxy \
+  --client-certificate=${CERTS_DIR}/kube-proxy/kube-proxy.pem \
+  --client-key=${CERTS_DIR}/kube-proxy/kube-proxy-key.pem \
+  --embed-certs=true \
+  --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
+
+kubectl config set-context default \
+  --cluster=vi7-kubernetes \
+  --user=system:kube-proxy \
+  --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
+
+kubectl config use-context default --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
+
+#Generate config for kube-controller-manager
+kubectl config set-cluster vi7-kubernetes \
+    --certificate-authority=${CERTS_DIR}/CA/ca.pem \
+    --embed-certs=true \
+    --server=https://127.0.0.1:6443 \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+kubectl config set-credentials system:kube-controller-manager \
+    --client-certificate=${CERTS_DIR}/controller-manager/kube-controller-manager.pem \
+    --client-key=${CERTS_DIR}/controller-manager/kube-controller-manager-key.pem \
+    --embed-certs=true \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+kubectl config set-context default \
+    --cluster=vi7-kubernetes \
+    --user=system:kube-controller-manager \
+    --kubeconfig=kube-controller-manager.kubeconfig
+
+kubectl config use-context default --kubeconfig=${CONF_DIR}/kube-controller-manager.kubeconfig
+
+#Generate kube-scheduler config
+kubectl config set-cluster vi7-kubernetes \
+    --certificate-authority=${CERTS_DIR}/CA/ca.pem \
+    --embed-certs=true \
+    --server=https://127.0.0.1:6443 \
+    --kubeconfig=${CONF_DIR}/kube-scheduler.kubeconfig
+
+kubectl config set-credentials system:kube-scheduler \
+    --client-certificate=${CERTS_DIR}/kube-scheduler/kube-scheduler.pem \
+    --client-key=${CERTS_DIR}/kube-scheduler/kube-scheduler-key.pem \
+    --embed-certs=true \
+    --kubeconfig=${CONF_DIR}/kube-scheduler.kubeconfig
+
+kubectl config set-context default \
+    --cluster=vi7-kubernetes \
+    --user=system:kube-scheduler \
+    --kubeconfig=${CONF_DIR}/kube-scheduler.kubeconfig
+
+kubectl config use-context default --kubeconfig=${CONF_DIR}/kube-scheduler.kubeconfig
+
+#Generate kube-admin config
+kubectl config set-cluster vi7-kubernetes \
+    --certificate-authority=${CERTS_DIR}/CA/ca.pem \
+    --embed-certs=true \
+    --server=https://127.0.0.1:6443 \
+    --kubeconfig=${CONF_DIR}/admin.kubeconfig
+
+kubectl config set-credentials admin \
+    --client-certificate=${CERTS_DIR}/admin/admin.pem \
+    --client-key=${CERTS_DIR}/admin/admin-key.pem \
+    --embed-certs=true \
+    --kubeconfig=${CONF_DIR}/admin.kubeconfig
+
+kubectl config set-context default \
+    --cluster=vi7-kubernetes \
+    --user=admin \
+    --kubeconfig=${CONF_DIR}/admin.kubeconfig
+
+kubectl config use-context default --kubeconfig=${CONF_DIR}/admin.kubeconfig
+
+#Distribute configs across cluster (server/worker)
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+do
+	scp ${NODE}.kubeconfig kube-proxy.kubeconfig ${NODE}:~/
 done
