@@ -311,7 +311,7 @@ sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
 cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 
 systemctl daemon-reload
-systemctl enable etcd
+#systemctl enable etcd
 systemctl start etcd
 
 cd ${WORKFOLDER}
@@ -347,5 +347,5 @@ cp ${KUBECONFDIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler
 
 #Start controller services
 systemctl daemon-reload
-systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+#systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 systemctl start kube-apiserver kube-controller-manager kube-scheduler
