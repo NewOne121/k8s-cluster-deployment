@@ -8,7 +8,7 @@
     {
       "C": "RU",
       "L": "Moscow",
-      "O": "Kubernetes",
+      "O": "system:kube-scheduler",
       "OU": "NA",
       "ST": "Moscow"
     }
