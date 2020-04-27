@@ -294,6 +294,9 @@ EOF
 
 #Setup ETCD cluster on controller nodes (Just 1 controller at start)
 cd ${WORKFOLDER}
+KUBECONFDIR=${WORKFOLDER}/config
+cp -r ${GITDIR}/config ${KUBECONFDIR}
+
 ETCD_NAME=$(hostname -s)
 CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
 
@@ -302,11 +305,48 @@ wget -q --timestamping \
 tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
 mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 mkdir -p /etc/etcd /var/lib/etcdz
-cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem /etc/etcd/
-sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${GITDIR}/config/etcd.systemd.unit
-sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${GITDIR}/config/etcd.systemd.unit
-cp ${GITDIR}/config/etcd.systemd.unit /etc/systemd/system/etcd.service
+cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem \
+	${CERTS_DIR}/kube-apiserver/kubernetes.pem /etc/etcd/
+sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${KUBECONFDIR}/etcd.systemd.unit
+sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
+cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 
 systemctl daemon-reload
 systemctl enable etcd
 systemctl start etcd
+
+cd ${WORKFOLDER}
+###Setup control pane
+mkdir -p /etc/kubernetes/config
+#Get kubernetes binaries
+wget -q --timestamping \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-apiserver" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-controller-manager" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-scheduler" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
+
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+
+#Distribute controller certs
+mkdir -p /var/lib/kubernetes/
+cp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+	service-account-key.pem service-account.pem \
+  encryption-config.yaml /var/lib/kubernetes/
+
+sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/kube-apiserver.systemd.unit
+cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-apiserver.service
+
+#Setup controller manager
+cp ${CONF_DIR}/kube-controller-manager.kubeconfig /var/lib/kubernetes/
+cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-controller-manager.service
+
+#Setup kubernetes scheduler
+cp ${CONF_DIR}/kube-scheduler.kubeconfig /var/lib/kubernetes/
+cp ${CONF_DIR}/kube-scheduler.yaml /etc/kubernetes/config/kube-scheduler.yaml
+cp ${CONF_DIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler.service
+
+#Start controller services
+systemctl daemon-reload
+systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+systemctl start kube-apiserver kube-controller-manager kube-scheduler
