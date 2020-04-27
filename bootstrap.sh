@@ -342,9 +342,9 @@ cp ${CONF_DIR}/kube-controller-manager.kubeconfig /var/lib/kubernetes/
 cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-controller-manager.service
 
 #Setup kubernetes scheduler
-cp ${CONF_DIR}/kube-scheduler.kubeconfig /var/lib/kubernetes/
-cp ${CONF_DIR}/kube-scheduler.yaml /etc/kubernetes/config/kube-scheduler.yaml
-cp ${CONF_DIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler.service
+cp ${KUBECONFDIR}/kube-scheduler.kubeconfig /var/lib/kubernetes/
+cp ${KUBECONFDIR}/kube-scheduler.yaml /etc/kubernetes/config/kube-scheduler.yaml
+cp ${KUBECONFDIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler.service
 
 #Start controller services
 systemctl daemon-reload
