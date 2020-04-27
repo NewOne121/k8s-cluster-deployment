@@ -338,7 +338,7 @@ cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-apiserver
 
 #Setup controller manager
 cp ${CONF_DIR}/kube-controller-manager.kubeconfig /var/lib/kubernetes/
-cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-controller-manager.service
+cp ${KUBECONFDIR}/kube-controller-manager.systemd.unit /etc/systemd/system/kube-controller-manager.service
 
 #Setup kubernetes scheduler
 cp ${KUBECONFDIR}/kube-scheduler.kubeconfig /var/lib/kubernetes/
