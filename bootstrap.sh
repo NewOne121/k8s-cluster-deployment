@@ -292,3 +292,21 @@ resources:
       - identity: {}
 EOF
 
+#Setup ETCD cluster on controller nodes (Just 1 controller at start)
+cd ${WORKFOLDER}
+ETCD_NAME=$(hostname -s)
+CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
+
+wget -q --timestamping \
+"https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
+tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
+mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
+mkdir -p /etc/etcd /var/lib/etcd
+cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem /etc/etcd/
+sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${GITDIR}/config/etcd.systemd.unit
+sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${GITDIR}/config/etcd.systemd.unit
+cp ${GITDIR}/config/etcd.systemd.unit /etc/systemd/system/etcd.service
+
+systemctl daemon-reload
+systemctl enable etcd
+systemctl start etcd
