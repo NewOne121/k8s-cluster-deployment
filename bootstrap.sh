@@ -305,8 +305,7 @@ wget -q --timestamping \
 tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
 mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 mkdir -p /etc/etcd /var/lib/etcdz
-cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/CA/ \
-	${CERTS_DIR}/kube-apiserver/kubernetes.pem /etc/etcd/
+cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem /etc/etcd/
 sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${KUBECONFDIR}/etcd.systemd.unit
 sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
 cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
