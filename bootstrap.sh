@@ -291,3 +291,4 @@ resources:
               secret: ${ENCRYPTION_KEY}
       - identity: {}
 EOF
+
