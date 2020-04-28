@@ -351,5 +351,14 @@ cp ${KUBECONFDIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler
 
 #Start controller services
 systemctl daemon-reload
-#systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 systemctl start kube-apiserver kube-controller-manager kube-scheduler
+
+#Enable heathchecks
+yum install -y epel-release
+yum install -y nginx
+cp ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-available/kubernetes.default.svc.cluster.local
+ln -s /etc/nginx/sites-available/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+
+sudo systemctl restart nginx
+sudo systemctl enable nginx
