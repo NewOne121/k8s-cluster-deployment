@@ -59,6 +59,7 @@ fi
 ###Certs time!
 #Certificate Authority
 CERTS_DIR="$WORKFOLDER/certs"
+mkdir -p ${CERTS_DIR}
 cp -r ${GITDIR}/certs/* ${CERTS_DIR}/
 
 cd ${CERTS_DIR}/CA\
