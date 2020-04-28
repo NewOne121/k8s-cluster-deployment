@@ -331,6 +331,7 @@ cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
 #Distribute admin configs
 cp ${CONF_DIR}/admin.kubeconfig ~/.kube/config
+#kubectl insecure-skip-tls-verify
 
 #Distribute controller certs
 mkdir -p /var/lib/kubernetes/
@@ -360,7 +361,6 @@ systemctl start kube-apiserver kube-controller-manager kube-scheduler
 yum install -y epel-release
 yum install -y nginx
 mkdir -p /etc/nginx/sites-enabled
-echo "include /etc/nginx/sites-enabled/*;" >> /etc/nginx/nginx.conf
 ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
 
 sudo systemctl restart nginx
