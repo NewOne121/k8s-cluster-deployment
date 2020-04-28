@@ -365,3 +365,6 @@ ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabl
 
 sudo systemctl restart nginx
 sudo systemctl enable nginx
+
+#Create kubelet/apiserver clusterroles
+kubectl -f ${CONF_DIR}/role/apiserver-to-kubelet.yaml
