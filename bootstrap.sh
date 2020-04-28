@@ -357,12 +357,13 @@ systemctl daemon-reload
 systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
-#Enable heathchecks
-yum install -y epel-release
-yum install -y nginx
-mkdir -p /etc/nginx/sites-enabled
-sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
-ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+##Enable heathchecks
+#yum install -y epel-release
+#yum install -y nginx
+#mkdir -p /etc/nginx/sites-enabled
+#sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+#ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+#curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
 
 sudo systemctl restart nginx
 sudo systemctl enable nginx
