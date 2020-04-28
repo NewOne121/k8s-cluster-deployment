@@ -327,6 +327,9 @@ wget -q --timestamping \
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
+#Distribute admin configs
+cp ${KUBECONFDIR}conf/admin.kubeconfig ~/.kube/config
+
 #Distribute controller certs
 mkdir -p /var/lib/kubernetes/
 cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/CA/ca-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem \
