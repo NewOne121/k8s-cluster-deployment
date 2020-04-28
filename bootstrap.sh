@@ -294,9 +294,10 @@ resources:
 EOF
 
 #Setup ETCD cluster on controller nodes (Just 1 controller at start)
-cd ${WORKFOLDER}
 KUBECONFDIR=${WORKFOLDER}/config
-cp -r ${GITDIR}/config/* ${KUBECONFDIR}
+mkdir -p ${KUBECONFDIR}
+cd ${WORKFOLDER}
+cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
 
 ETCD_NAME=$(hostname -s)
 CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
