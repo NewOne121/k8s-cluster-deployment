@@ -330,7 +330,7 @@ chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
 #Distribute admin configs
-cp ${KUBECONFDIR}conf/admin.kubeconfig ~/.kube/config
+cp ${KUBECONFDIR}/conf/admin.kubeconfig ~/.kube/config
 
 #Distribute controller certs
 mkdir -p /var/lib/kubernetes/
