@@ -368,4 +368,4 @@ sudo systemctl restart nginx
 sudo systemctl enable nginx
 
 #Create kubelet/apiserver clusterroles
-kubectl -f ${CONF_DIR}/role/apiserver-to-kubelet.yaml
+kubectl apply -f ${CONF_DIR}/role/apiserver-to-kubelet.yaml
