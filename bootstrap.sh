@@ -364,9 +364,9 @@ systemctl start kube-apiserver kube-controller-manager kube-scheduler
 #sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
 #ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
 #curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
-
-sudo systemctl restart nginx
-sudo systemctl enable nginx
+#
+#sudo systemctl restart nginx
+#sudo systemctl enable nginx
 
 #Create kubelet/apiserver clusterroles
 kubectl apply -f ${KUBECONFDIR}/role/apiserver-to-kubelet.yaml
