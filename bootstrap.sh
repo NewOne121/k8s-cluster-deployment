@@ -361,6 +361,7 @@ systemctl start kube-apiserver kube-controller-manager kube-scheduler
 yum install -y epel-release
 yum install -y nginx
 mkdir -p /etc/nginx/sites-enabled
+sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
 ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
 
 sudo systemctl restart nginx
