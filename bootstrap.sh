@@ -380,5 +380,5 @@ do
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
 	    ${CONF_DIR}/kube-proxy.kubeconfig\
 	    ${NODE}:~/\
-	 && ssh ${NODE} "bash /prepare-worker.sh"
+	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
