@@ -370,3 +370,15 @@ systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 #Create kubelet/apiserver clusterroles
 kubectl apply -f ${KUBECONFDIR}/role/apiserver-to-kubelet.yaml
+
+#Bootstrapping Worker nodes
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+do
+	scp ${KUBECONFDIR}/scripts/prepare-worker.sh\
+			${KUBECONFDIR}/kubelet-config.yaml\
+	    ${KUBECONFDIR}/kubelet-service.systemd.unit\
+	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
+	    ${CONF_DIR}/kube-proxy.kubeconfig\
+	    ${NODE}:~/\
+	 && ssh ${NODE} "bash /prepare-worker.sh"
+done
