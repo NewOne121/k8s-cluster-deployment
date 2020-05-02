@@ -304,7 +304,7 @@ CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
-tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
+tar -xf etcd-v3.4.0-linux-amd64.tar.gz 2&>1 > /dev/null
 mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 mkdir -p /etc/etcd /var/lib/etcdz
 cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem /etc/etcd/
