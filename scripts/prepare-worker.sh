@@ -45,7 +45,7 @@ mkdir -p \
   /var/lib/kubernetes \
   /var/run/kubernetes
 
-wget -q --show-progress --https-only --timestamping \
+wget -q --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-proxy \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubelet
