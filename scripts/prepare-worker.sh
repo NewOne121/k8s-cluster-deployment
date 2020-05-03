@@ -9,55 +9,38 @@ swapoff -a
 sysctl net.ipv4.ip_forward=1
 POD_NETWORK_CIDR="10.244.0.0/16"
 
-#Get docker
-# Install Docker CE
-### Add Docker repository.
-yum-config-manager --add-repo \
-  https://download.docker.com/linux/centos/docker-ce.repo
-## Install Docker CE.
-yum update -y && yum install -y \
-  containerd.io-1.2.13 \
-  docker-ce-19.03.8 \
-  docker-ce-cli-19.03.8
-## Create /etc/docker directory.
-mkdir -p /etc/docker
-# Setup daemon.
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2",
-  "storage-opts": [
-    "overlay2.override_kernel_check=true"
-  ]
-}
-EOF
-mkdir -p /etc/systemd/system/docker.service.d
-# Restart Docker
-systemctl daemon-reload
-systemctl restart docker
 
 #Get kuberentes binaries
 mkdir -p \
+  /etc/cni/net.d \
+  /opt/cni/bin \
   /var/lib/kubelet \
   /var/lib/kube-proxy \
   /var/lib/kubernetes \
   /var/run/kubernetes
 
 wget -q --timestamping \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.15.0/crictl-v1.15.0-linux-amd64.tar.gz \
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64 \
+  https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz \
+  https://github.com/containerd/containerd/releases/download/v1.2.9/containerd-1.2.9.linux-amd64.tar.gz \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-proxy \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubelet
 
-chmod +x kubectl kube-proxy kubelet
+mkdir containerd
+tar -xvf crictl-v1.15.0-linux-amd64.tar.gz
+tar -xvf containerd-1.2.9.linux-amd64.tar.gz -C containerd
+tar -xvf cni-plugins-linux-amd64-v0.8.2.tgz -C /opt/cni/bin/
+cp runc.amd64 runc
+chmod +x crictl kubectl kube-proxy kubelet runc
+cp crictl kubectl kube-proxy kubelet runc /usr/local/bin/
+cp containerd/bin/* /bin/
 
-cp kubectl kube-proxy kubelet /usr/local/bin/
-cp ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
-cp ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-cp ~/ca.pem /var/lib/kubernetes/
+#cp kubectl kube-proxy kubelet /usr/local/bin/
+#cp ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
+#cp ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+#cp ~/ca.pem /var/lib/kubernetes/
 
 sed -ri 's#HOSTNAME#'$HOSTNAME'#g' ~/kubelet-config.yaml
 cp ~/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml
