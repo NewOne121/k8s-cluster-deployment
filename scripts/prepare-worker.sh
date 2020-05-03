@@ -2,6 +2,8 @@
 
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
+cd ${WORKFOLDER}
+
 yum install -y socat conntrack ipset yum-utils device-mapper-persistent-data lvm2
 swapoff -a
 sysctl net.ipv4.ip_forward=1
@@ -18,7 +20,7 @@ yum update -y && yum install -y \
   docker-ce-19.03.8 \
   docker-ce-cli-19.03.8
 ## Create /etc/docker directory.
-mkdir /etc/docker
+mkdir -p /etc/docker
 # Setup daemon.
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -50,7 +52,7 @@ wget -q --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-proxy \
   https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubelet
 
-chmod +x crictl kubectl kube-proxy kubelet runc
+chmod +x kubectl kube-proxy kubelet
 
 mv kubectl kube-proxy kubelet /usr/local/bin/
 mv ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
