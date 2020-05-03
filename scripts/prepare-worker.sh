@@ -62,6 +62,7 @@ cp ~/ca.pem /var/lib/kubernetes/
 sed -ri 's#HOSTNAME#'$HOSTNAME'#g' ~/kubelet-config.yaml
 cp ~/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml
 cp ~/kubelet-service.systemd.unit /etc/systemd/system/kubelet.service
+cp ~/kube-proxy-config.yaml /var/lib/kube-proxy/kube-proxy-config.yaml
 cp ~/kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
 

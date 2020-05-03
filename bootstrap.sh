@@ -377,6 +377,7 @@ do
 	scp ${GITDIR}/scripts/prepare-worker.sh\
 			${KUBECONFDIR}/kubelet-config.yaml\
 	    ${KUBECONFDIR}/kubelet-service.systemd.unit\
+	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
 	    ${CONF_DIR}/kube-proxy.kubeconfig\
 	    ${NODE}:~/\
