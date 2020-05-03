@@ -54,16 +54,16 @@ wget -q --timestamping \
 
 chmod +x kubectl kube-proxy kubelet
 
-mv kubectl kube-proxy kubelet /usr/local/bin/
-mv ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
-mv ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-mv ~/ca.pem /var/lib/kubernetes/
+cp kubectl kube-proxy kubelet /usr/local/bin/
+cp ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
+cp ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+cp ~/ca.pem /var/lib/kubernetes/
 
 sed -ri 's#HOSTNAME#'$HOSTNAME'#g' ~/kubelet-config.yaml
-mv ~/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml
-mv ~/kubelet-service.systemd.unit /etc/systemd/system/kubelet.service
-mv ~/kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
-mv ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
+cp ~/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml
+cp ~/kubelet-service.systemd.unit /etc/systemd/system/kubelet.service
+cp ~/kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
+cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
 
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy
