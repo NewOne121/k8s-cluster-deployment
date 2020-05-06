@@ -8,7 +8,7 @@
     {
       "C": "RU",
       "L": "Moscow",
-      "O": "Kubernetes",
+      "O": "system:node-proxier",
       "OU": "NA",
       "ST": "Moscow"
     }

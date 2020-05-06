@@ -8,7 +8,7 @@
     {
       "C": "RU",
       "L": "Moscow",
-      "O": "Kubernetes",
+      "O": "system:kube-controller-manager",
       "OU": "NA",
       "ST": "Moscow"
     }

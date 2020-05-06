@@ -15,7 +15,7 @@ echo "echo 'Can't change directory to bootstrap workfolder, exiting.'; kill -9 $
 if [ ! -d ""${WORKFOLDER}"/ssh" ]
 then
 	mkdir -p "$WORKFOLDER"/ssh
-	ssh-keygen -b 2048 -t rsa -f $WORKFOLDER/ssh/k8s-management -q -N ""
+	ssh-keygen -b 2048 -t rsa -f ${WORKFOLDER}/ssh/k8s-management -q -N ""
 fi
 
 #The cfssl and cfssljson command line utilities will be used to provision a PKI Infrastructure and generate TLS certificates.
@@ -59,6 +59,7 @@ fi
 ###Certs time!
 #Certificate Authority
 CERTS_DIR="$WORKFOLDER/certs"
+mkdir -p ${CERTS_DIR}
 cp -r ${GITDIR}/certs/* ${CERTS_DIR}/
 
 cd ${CERTS_DIR}/CA\
@@ -97,7 +98,7 @@ do
 }
 EOF
 
-NODE_IPADDR=$(awk -F ' ' '/'$NODE'/ {print $1}' "$GITDIR"/config/k8s_nodes)
+NODE_IPADDR=$(awk -F ' ' '/'${NODE}'/ {print $1}' "$GITDIR"/config/k8s_nodes)
 cfssl gencert \
   -ca=${CERTS_DIR}/CA/ca.pem \
   -ca-key=${CERTS_DIR}/CA/ca-key.pem \
@@ -214,18 +215,18 @@ kubectl config set-cluster vi7-kubernetes \
     --certificate-authority=${CERTS_DIR}/CA/ca.pem \
     --embed-certs=true \
     --server=https://127.0.0.1:6443 \
-    --kubeconfig=kube-controller-manager.kubeconfig
+    --kubeconfig=${CONF_DIR}/kube-controller-manager.kubeconfig
 
 kubectl config set-credentials system:kube-controller-manager \
     --client-certificate=${CERTS_DIR}/controller-manager/kube-controller-manager.pem \
     --client-key=${CERTS_DIR}/controller-manager/kube-controller-manager-key.pem \
     --embed-certs=true \
-    --kubeconfig=kube-controller-manager.kubeconfig
+    --kubeconfig=${CONF_DIR}/kube-controller-manager.kubeconfig
 
 kubectl config set-context default \
     --cluster=vi7-kubernetes \
     --user=system:kube-controller-manager \
-    --kubeconfig=kube-controller-manager.kubeconfig
+    --kubeconfig=${CONF_DIR}/kube-controller-manager.kubeconfig
 
 kubectl config use-context default --kubeconfig=${CONF_DIR}/kube-controller-manager.kubeconfig
 
@@ -293,20 +294,96 @@ resources:
 EOF
 
 #Setup ETCD cluster on controller nodes (Just 1 controller at start)
+KUBECONFDIR=${WORKFOLDER}/config
+mkdir -p ${KUBECONFDIR}
 cd ${WORKFOLDER}
+cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
+
 ETCD_NAME=$(hostname -s)
 CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
-tar -xvf etcd-v3.4.0-linux-amd64.tar.gz
+tar -xf etcd-v3.4.0-linux-amd64.tar.gz 2&>1 > /dev/null
 mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 mkdir -p /etc/etcd /var/lib/etcdz
-cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem /etc/etcd/
-sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${GITDIR}/config/etcd.systemd.unit
-sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${GITDIR}/config/etcd.systemd.unit
-cp ${GITDIR}/config/etcd.systemd.unit /etc/systemd/system/etcd.service
+cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem /etc/etcd/
+sed -ri 's#ETCD_NAME#'${ETCD_NAME}'#g' ${KUBECONFDIR}/etcd.systemd.unit
+sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
+cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 
 systemctl daemon-reload
-systemctl enable etcd
+#systemctl enable etcd
 systemctl start etcd
+
+cd ${WORKFOLDER}
+###Setup control pane
+mkdir -p /etc/kubernetes/config
+#Get kubernetes binaries
+wget -q --timestamping \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-apiserver" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-controller-manager" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-scheduler" \
+"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
+
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+
+#Distribute admin configs
+cp ${CONF_DIR}/admin.kubeconfig ~/.kube/config
+#kubectl insecure-skip-tls-verify
+
+#Distribute controller certs
+mkdir -p /var/lib/kubernetes/
+cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/CA/ca-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem \
+	${CERTS_DIR}/service-accounts/service-account-key.pem ${CERTS_DIR}/service-accounts/service-account.pem \
+  encryption-config.yaml /var/lib/kubernetes/
+
+sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/kube-apiserver.systemd.unit
+cp ${KUBECONFDIR}/kube-apiserver.systemd.unit /etc/systemd/system/kube-apiserver.service
+
+#Setup controller manager
+cp ${CONF_DIR}/kube-controller-manager.kubeconfig /var/lib/kubernetes/
+cp ${KUBECONFDIR}/kube-controller-manager.systemd.unit /etc/systemd/system/kube-controller-manager.service
+
+#Setup kubernetes scheduler
+cp ${CONF_DIR}/kube-scheduler.kubeconfig /var/lib/kubernetes/
+cp ${CONF_DIR}/kube-scheduler.kubeconfig /etc/kubernetes/config/kube-scheduler.kubeconfig
+cp ${KUBECONFDIR}/kube-scheduler.yaml /etc/kubernetes/config/kube-scheduler.yaml
+cp ${KUBECONFDIR}/kube-scheduler.systemd.unit /etc/systemd/system/kube-scheduler.service
+
+#Start controller services
+systemctl daemon-reload
+systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+systemctl start kube-apiserver kube-controller-manager kube-scheduler
+
+##Enable heathchecks
+#yum install -y epel-release
+#yum install -y nginx
+#mkdir -p /etc/nginx/sites-enabled
+#sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+#ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
+#curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
+#
+#sudo systemctl restart nginx
+#sudo systemctl enable nginx
+
+#Create kubelet/apiserver clusterroles
+kubectl apply -f ${KUBECONFDIR}/role/apiserver-to-kubelet.yaml
+
+#Bootstrapping Worker nodes
+for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+do
+	scp ${GITDIR}/scripts/prepare-worker.sh\
+			${KUBECONFDIR}/kubelet-config.yaml\
+	    ${KUBECONFDIR}/kubelet-service.systemd.unit\
+	    ${KUBECONFDIR}/kube-proxy-config.yaml\
+	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
+	    ${CONF_DIR}/kube-proxy.kubeconfig\
+	    ${KUBECONFDIR}/cni.conf\
+	    ${KUBECONFDIR}/cni-loopback.conf\
+	    ${KUBECONFDIR}/containerd.config.toml\
+	    ${KUBECONFDIR}/containerd.systemd.unit\
+	    ${NODE}:~/\
+	 && ssh ${NODE} "bash ~/prepare-worker.sh"
+done
