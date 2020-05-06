@@ -48,6 +48,10 @@ cp ~/kubelet-service.systemd.unit /etc/systemd/system/kubelet.service
 cp ~/kube-proxy-config.yaml /var/lib/kube-proxy/kube-proxy-config.yaml
 cp ~/kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
+cp ~/cni.conf /etc/cni/net.d/10-bridge.conf
+cp ~/cni-loopback.conf /etc/cni/net.d/99-loopback.conf
+cp ~/containerd.config.toml /etc/containerd/config.toml
+cp ~/containerd.systemd.unit /etc/systemd/system/
 
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy

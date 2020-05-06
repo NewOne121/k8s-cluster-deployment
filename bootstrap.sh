@@ -15,7 +15,7 @@ echo "echo 'Can't change directory to bootstrap workfolder, exiting.'; kill -9 $
 if [ ! -d ""${WORKFOLDER}"/ssh" ]
 then
 	mkdir -p "$WORKFOLDER"/ssh
-	ssh-keygen -b 2048 -t rsa -f $WORKFOLDER/ssh/k8s-management -q -N ""
+	ssh-keygen -b 2048 -t rsa -f ${WORKFOLDER}/ssh/k8s-management -q -N ""
 fi
 
 #The cfssl and cfssljson command line utilities will be used to provision a PKI Infrastructure and generate TLS certificates.
@@ -98,7 +98,7 @@ do
 }
 EOF
 
-NODE_IPADDR=$(awk -F ' ' '/'$NODE'/ {print $1}' "$GITDIR"/config/k8s_nodes)
+NODE_IPADDR=$(awk -F ' ' '/'${NODE}'/ {print $1}' "$GITDIR"/config/k8s_nodes)
 cfssl gencert \
   -ca=${CERTS_DIR}/CA/ca.pem \
   -ca-key=${CERTS_DIR}/CA/ca-key.pem \
@@ -380,6 +380,10 @@ do
 	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
 	    ${CONF_DIR}/kube-proxy.kubeconfig\
+	    ${KUBECONFDIR}/cni.conf\
+	    ${KUBECONFDIR}/cni-loopback.conf\
+	    ${KUBECONFDIR}/containerd.config.toml\
+	    ${KUBECONFDIR}/containerd.systemd.unit\
 	    ${NODE}:~/\
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
