@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
 cd ${WORKFOLDER}
