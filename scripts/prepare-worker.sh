@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
 cd ${WORKFOLDER}
@@ -7,7 +9,7 @@ cd ${WORKFOLDER}
 yum install -y socat conntrack ipset yum-utils device-mapper-persistent-data lvm2
 swapoff -a
 sysctl net.ipv4.ip_forward=1
-POD_NETWORK_CIDR="10.244.0.0/16"
+POD_NETWORK_CIDR="10.200.1.0/24"
 
 
 #Get kuberentes binaries
@@ -37,10 +39,10 @@ chmod +x crictl kubectl kube-proxy kubelet runc
 cp crictl kubectl kube-proxy kubelet runc /usr/local/bin/
 cp containerd/bin/* /bin/
 
-#cp kubectl kube-proxy kubelet /usr/local/bin/
-#cp ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
-#cp ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-#cp ~/ca.pem /var/lib/kubernetes/
+cp kubectl kube-proxy kubelet /usr/local/bin/
+cp ~/${HOSTNAME}-key.pem ~/${HOSTNAME}.pem /var/lib/kubelet/
+cp ~/${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+cp ~/ca.pem /var/lib/kubernetes/
 
 sed -ri 's#HOSTNAME#'$HOSTNAME'#g' ~/kubelet-config.yaml
 cp ~/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml
@@ -51,11 +53,11 @@ cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
 cp ~/cni.conf /etc/cni/net.d/10-bridge.conf
 cp ~/cni-loopback.conf /etc/cni/net.d/99-loopback.conf
 cp ~/containerd.config.toml /etc/containerd/config.toml
-cp ~/containerd.systemd.unit /etc/systemd/system/
+cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
 systemctl daemon-reload
-systemctl enable kubelet kube-proxy
-systemctl start kubelet kube-proxy
+#systemctl enable kubelet kube-proxy
+#systemctl start kubelet kube-proxy
 
 
 

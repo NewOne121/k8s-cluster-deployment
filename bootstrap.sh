@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.0.0.99,10.0.3.15,10.0.0.1'
+KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15' #FIXME should be same for etcd
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
@@ -173,7 +173,7 @@ for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes); do
   kubectl config set-cluster vi7-kubernetes \
     --certificate-authority=${CERTS_DIR}/CA/ca.pem \
     --embed-certs=true \
-    --server=https://10.0.0.1:6443 \
+    --server=https://10.200.0.1:6443 \
     --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
 
   kubectl config set-credentials system:node:${NODE} \
@@ -194,7 +194,7 @@ done
 kubectl config set-cluster vi7-kubernetes \
   --certificate-authority=${CERTS_DIR}/CA/ca.pem \
   --embed-certs=true \
-  --server=https://10.0.0.1:6443 \
+  --server=https://10.200.0.1:6443 \
   --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
 
 kubectl config set-credentials system:kube-proxy \
@@ -300,11 +300,11 @@ cd ${WORKFOLDER}
 cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
 
 ETCD_NAME=$(hostname -s)
-CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
+CONTROLLER_IP='10.200.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
-tar -xf etcd-v3.4.0-linux-amd64.tar.gz 2&>1 > /dev/null
+tar -xf etcd-v3.4.0-linux-amd64.tar.gz 2>&1 > /dev/null
 mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/
 mkdir -p /etc/etcd /var/lib/etcdz
 cp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kube-apiserver/kubernetes.pem ${CERTS_DIR}/kube-apiserver/kubernetes-key.pem /etc/etcd/
