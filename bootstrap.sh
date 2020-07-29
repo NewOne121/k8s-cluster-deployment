@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15'
+KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15' #FIXME should be same for etcd
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
@@ -173,7 +173,7 @@ for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes); do
   kubectl config set-cluster vi7-kubernetes \
     --certificate-authority=${CERTS_DIR}/CA/ca.pem \
     --embed-certs=true \
-    --server=https://10.0.0.1:6443 \
+    --server=https://10.200.0.1:6443 \
     --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
 
   kubectl config set-credentials system:node:${NODE} \
@@ -194,7 +194,7 @@ done
 kubectl config set-cluster vi7-kubernetes \
   --certificate-authority=${CERTS_DIR}/CA/ca.pem \
   --embed-certs=true \
-  --server=https://10.0.0.1:6443 \
+  --server=https://10.200.0.1:6443 \
   --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
 
 kubectl config set-credentials system:kube-proxy \

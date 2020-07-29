@@ -9,7 +9,7 @@ cd ${WORKFOLDER}
 yum install -y socat conntrack ipset yum-utils device-mapper-persistent-data lvm2
 swapoff -a
 sysctl net.ipv4.ip_forward=1
-POD_NETWORK_CIDR="10.244.0.0/16"
+POD_NETWORK_CIDR="10.200.1.0/24"
 
 
 #Get kuberentes binaries
