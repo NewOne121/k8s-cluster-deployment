@@ -9,6 +9,7 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 `In development` 
 
 # TODO
+* complete automation of setting environemnt on target hosts
 * add clanup functional for worker nodes
 * add options to create custom number of masters/workers. I.e. increase deployment flexibility
 * add auto-check for current context (interactive)
