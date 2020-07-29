@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.0.0.99,10.0.3.15,10.0.0.1'
+KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15'
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
@@ -300,7 +300,7 @@ cd ${WORKFOLDER}
 cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
 
 ETCD_NAME=$(hostname -s)
-CONTROLLER_IP='10.0.0.1' #In my case just 1 controller
+CONTROLLER_IP='10.200.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
