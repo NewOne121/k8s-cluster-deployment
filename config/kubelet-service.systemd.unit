@@ -6,6 +6,7 @@ Requires=containerd.service
 
 [Service]
 ExecStart=/usr/local/bin/kubelet \
+	--allow-privileged=true \
   --config=/var/lib/kubelet/kubelet-config.yaml \
   --container-runtime=remote \
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
