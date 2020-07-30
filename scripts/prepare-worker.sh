@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+systemctl stop containerd kubelet kube-proxy
 
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
@@ -56,8 +57,8 @@ cp ~/containerd.config.toml /etc/containerd/config.toml
 cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
 systemctl daemon-reload
-#systemctl enable kubelet kube-proxy
-#systemctl start kubelet kube-proxy
+systemctl enable kubelet kube-proxy
+systemctl start kubelet kube-proxy
 
 
 
