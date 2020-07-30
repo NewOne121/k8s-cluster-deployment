@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+systemctl stop containerd kubelet kube-proxy
 
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
