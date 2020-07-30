@@ -77,7 +77,7 @@ cd ${CERTS_DIR}/admin\
 #Kubelet client certificates
 mkdir -p ${CERTS_DIR}/kubelet\
 && cd ${CERTS_DIR}/kubelet\
-&& for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes);
+&& for NODE in $(awk -F ' ' '{print $2}' "$GITDIR"/config/k8s_nodes);
 do
 	cat > ${CERTS_DIR}/kubelet/${NODE}-csr.json <<EOF
 {
