@@ -315,6 +315,7 @@ cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 systemctl daemon-reload
 #systemctl enable etcd
 systemctl start etcd
+sleep 10
 
 cd ${WORKFOLDER}
 ###Setup control pane
@@ -357,6 +358,7 @@ systemctl daemon-reload
 systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
+sleep 10
 ##Enable heathchecks
 #yum install -y epel-release
 #yum install -y nginx
