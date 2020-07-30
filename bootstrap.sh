@@ -387,3 +387,5 @@ do
 	    ${NODE}:~/\
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
+
+bash ${GITDIR}/scripts/prepare-worker.sh
