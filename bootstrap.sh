@@ -160,7 +160,7 @@ cfssl gencert \
   kube-service-accounts-csr.json | cfssljson -bare service-account
 
 #Distribute keys across cluster (server/worker)
-for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+for NODE in $(awk -F ' ' '{print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${CERTS_DIR}/CA/ca.pem ${CERTS_DIR}/kubelet/${NODE}-key.pem ${CERTS_DIR}/kubelet/${NODE}.pem ${NODE}:~/
 done
@@ -169,7 +169,7 @@ done
 CONF_DIR="${WORKFOLDER}/conf"
 mkdir -p ${CONF_DIR}
 
-for NODE in $(awk -F ' ' '!/master/ {print $2}' "$GITDIR"/config/k8s_nodes); do
+for NODE in $(awk -F ' ' '{print $2}' "$GITDIR"/config/k8s_nodes); do
   kubectl config set-cluster vi7-kubernetes \
     --certificate-authority=${CERTS_DIR}/CA/ca.pem \
     --embed-certs=true \
