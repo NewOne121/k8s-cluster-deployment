@@ -382,8 +382,6 @@ do
 	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
 	    ${CONF_DIR}/kube-proxy.kubeconfig\
-	    ${KUBECONFDIR}/cni.conf\
-	    ${KUBECONFDIR}/cni-loopback.conf\
 	    ${KUBECONFDIR}/containerd.config.toml\
 	    ${KUBECONFDIR}/containerd.systemd.unit\
 	    ${NODE}:~/\
