@@ -56,8 +56,8 @@ cp ~/containerd.config.toml /etc/containerd/config.toml
 cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
 systemctl daemon-reload
-#systemctl enable kubelet kube-proxy
-#systemctl start kubelet kube-proxy
+systemctl enable kubelet kube-proxy
+systemctl start kubelet kube-proxy
 
 
 
