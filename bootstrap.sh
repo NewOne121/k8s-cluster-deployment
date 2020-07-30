@@ -271,7 +271,7 @@ kubectl config set-context default \
 kubectl config use-context default --kubeconfig=${CONF_DIR}/admin.kubeconfig
 
 #Distribute configs across cluster (server/worker)
-for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+for NODE in $(awk -F ' ' '{print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${CONF_DIR}/${NODE}.kubeconfig ${CONF_DIR}/kube-proxy.kubeconfig ${NODE}:~/
 done
@@ -372,7 +372,7 @@ systemctl start kube-apiserver kube-controller-manager kube-scheduler
 kubectl apply -f ${KUBECONFDIR}/role/apiserver-to-kubelet.yaml
 
 #Bootstrapping Worker nodes
-for NODE in $(awk -F ' ' '!/master/ {print $2}' "${GITDIR}"/config/k8s_nodes);
+for NODE in $(awk -F ' ' '{print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${GITDIR}/scripts/prepare-worker.sh\
 			${KUBECONFDIR}/kubelet-config.yaml\
