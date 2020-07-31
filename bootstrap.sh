@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.245.0.1' #FIXME should be same for etcd
+KUBERNETES_PUBLIC_ADDRESS='10.245.0.1,10.33.0.1,10.200.0.1' #FIXME should be same for etcd
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
@@ -387,3 +387,6 @@ do
 	    ${NODE}:~/\
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
+
+CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
+sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -
