@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15' #FIXME should be same for etcd
+KUBERNETES_PUBLIC_ADDRESS='10.200.0.1' #FIXME should be same for etcd
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
