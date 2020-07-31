@@ -138,7 +138,7 @@ cd ${CERTS_DIR}/kube-proxy\
 
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
-KUBERNETES_PUBLIC_ADDRESS='10.200.0.1,10.0.3.15' #FIXME should be same for etcd
+KUBERNETES_PUBLIC_ADDRESS='10.245.0.1,10.33.0.1,10.200.0.1' #FIXME should be same for etcd
 KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
@@ -173,7 +173,7 @@ for NODE in $(awk -F ' ' '{print $2}' "$GITDIR"/config/k8s_nodes); do
   /usr/local/bin/kubectl config set-cluster vi7-kubernetes \
     --certificate-authority=${CERTS_DIR}/CA/ca.pem \
     --embed-certs=true \
-    --server=https://10.200.0.1:6443 \
+    --server=https://10.245.0.1:6443 \
     --kubeconfig=${CONF_DIR}/${NODE}.kubeconfig
 
   /usr/local/bin/kubectl config set-credentials system:node:${NODE} \
@@ -194,7 +194,7 @@ done
 /usr/local/bin/kubectl config set-cluster vi7-kubernetes \
   --certificate-authority=${CERTS_DIR}/CA/ca.pem \
   --embed-certs=true \
-  --server=https://10.200.0.1:6443 \
+  --server=https://10.245.0.1:6443 \
   --kubeconfig=${CONF_DIR}/kube-proxy.kubeconfig
 
 /usr/local/bin/kubectl config set-credentials system:kube-proxy \
@@ -300,7 +300,7 @@ cd ${WORKFOLDER}
 cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
 
 ETCD_NAME=$(hostname -s)
-CONTROLLER_IP='10.200.0.1' #In my case just 1 controller
+CONTROLLER_IP='10.245.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
@@ -382,10 +382,11 @@ do
 	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
 	    ${CONF_DIR}/kube-proxy.kubeconfig\
-	    ${KUBECONFDIR}/cni.conf\
-	    ${KUBECONFDIR}/cni-loopback.conf\
 	    ${KUBECONFDIR}/containerd.config.toml\
 	    ${KUBECONFDIR}/containerd.systemd.unit\
 	    ${NODE}:~/\
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
+
+CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
+sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -

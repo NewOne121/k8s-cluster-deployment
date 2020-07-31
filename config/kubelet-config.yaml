@@ -11,8 +11,8 @@ authorization:
   mode: Webhook
 clusterDomain: "cluster.local"
 clusterDNS:
-  - "10.200.0.1"
-podCIDR: "10.200.1.0/24"
+  - "10.245.0.1"
+podCIDR: "10.200.0.0/16"
 resolvConf: "/etc/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/HOSTNAME.pem"
