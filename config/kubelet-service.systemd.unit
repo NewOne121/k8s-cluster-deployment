@@ -15,7 +15,6 @@ ExecStart=/usr/local/bin/kubelet \
   --network-plugin=kubenet \
   --serialize-image-pulls=false \
   --register-node=true \
-  --api-servers=https://10.245.0.1:6443 \
   --v=2
 Restart=on-failure
 RestartSec=5
