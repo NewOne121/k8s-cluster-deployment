@@ -300,7 +300,7 @@ cd ${WORKFOLDER}
 cp -r ${GITDIR}/config/* ${KUBECONFDIR}/
 
 ETCD_NAME=$(hostname -s)
-CONTROLLER_IP='10.200.0.1' #In my case just 1 controller
+CONTROLLER_IP='10.245.0.1' #In my case just 1 controller
 
 wget -q --timestamping \
 "https://github.com/etcd-io/etcd/releases/download/v3.4.0/etcd-v3.4.0-linux-amd64.tar.gz"
