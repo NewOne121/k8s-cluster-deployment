@@ -12,7 +12,6 @@ ExecStart=/usr/local/bin/kubelet \
   --image-pull-progress-deadline=2m \
   --kubeconfig=/var/lib/kubelet/kubeconfig \
   --resolv-conf=/etc/resolv.conf \
-  --configure-cbr0=true \
   --network-plugin=kubenet \
   --reconcile-cidr=true \
   --serialize-image-pulls=false \
