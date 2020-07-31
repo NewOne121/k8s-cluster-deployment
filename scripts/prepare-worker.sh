@@ -10,12 +10,10 @@ cd ${WORKFOLDER}
 yum install -y socat conntrack ipset yum-utils device-mapper-persistent-data lvm2
 swapoff -a
 sysctl net.ipv4.ip_forward=1
-POD_NETWORK_CIDR="10.200.1.0/24"
 
 
 #Get kuberentes binaries
 mkdir -p \
-  /etc/cni/net.d \
   /opt/cni/bin \
   /var/lib/kubelet \
   /var/lib/kube-proxy \
@@ -51,8 +49,6 @@ cp ~/kubelet-service.systemd.unit /etc/systemd/system/kubelet.service
 cp ~/kube-proxy-config.yaml /var/lib/kube-proxy/kube-proxy-config.yaml
 cp ~/kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
-cp ~/cni.conf /etc/cni/net.d/10-bridge.conf
-cp ~/cni-loopback.conf /etc/cni/net.d/99-loopback.conf
 cp ~/containerd.config.toml /etc/containerd/config.toml
 cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
