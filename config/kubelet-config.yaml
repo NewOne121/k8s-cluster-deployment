@@ -12,7 +12,7 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "10.200.0.1"
-podCIDR: "10.200.1.0/24"
+podCIDR: "10.100.0.0/16"
 resolvConf: "/etc/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/HOSTNAME.pem"
