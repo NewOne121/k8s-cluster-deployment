@@ -16,7 +16,6 @@ ExecStart=/usr/local/bin/kube-controller-manager \
   --cluster-cidr=10.200.0.0/16 \
   --service-cluster-ip-range=10.33.0.0/24 \
   --use-service-account-credentials=true \
-  --master=https://10.245.0.1:6443 \
   --v=2
 
 Restart=on-failure
