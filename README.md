@@ -8,6 +8,10 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 
 `In development` 
 
+# Components/addons
+* Kube-router as network provider (https://github.com/cloudnativelabs/kube-router)
+* Kubernetes dashboard
+
 # TODO
 * complete automation of setting environemnt on target hosts
 * add clanup functional for worker nodes
