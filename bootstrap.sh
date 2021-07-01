@@ -388,5 +388,5 @@ do
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
 
-CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
-sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -
+#CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
+#sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -

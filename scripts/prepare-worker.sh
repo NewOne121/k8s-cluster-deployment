@@ -15,6 +15,7 @@ sysctl net.ipv4.ip_forward=1
 #Get kuberentes binaries
 mkdir -p \
   /opt/cni/bin \
+  /etc/containerd \
   /var/lib/kubelet \
   /var/lib/kube-proxy \
   /var/lib/kubernetes \
@@ -56,7 +57,6 @@ cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 mkdir -p /etc/cni/net.d
 cp ~/cni.conf ~/cni-loopback.conf /etc/cni/net.d
 
-swapoff -a
 systemctl stop firewalld iptables
 systemctl disable firewalld iptables
 systemctl daemon-reload
