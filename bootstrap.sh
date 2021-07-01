@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITDIR='/opt/git/github/k8s-cluster-deployment'
+GITDIR='/opt/git/github/K8S-playground'
 WORKFOLDER='/opt/k8s_bootstrap'
 
 if [ ! -d "$WORKFOLDER" ]
@@ -39,7 +39,7 @@ do
 		ADDNODE=$(grep "${NODE}" "${GITDIR}"/config/k8s_nodes)
 		echo "${ADDNODE}" >> /etc/hosts
 	fi
-	ssh-copy-id -o StrictHostKeyChecking=no -i ${WORKFOLDER}/ssh/k8s-management.pub "${NODE}" > /dev/null 2>&1\
+	ssh-copy-id -o StrictHostKeyChecking=no -i ${WORKFOLDER}/ssh/k8s-management.pub "root@${NODE}" > /dev/null 2>&1\
 	&& scp "${GITDIR}"/config/k8s_nodes "${GITDIR}"/scripts/setup-dns.sh ${NODE}:/tmp > /dev/null 2>&1\
 	&& ssh ${NODE} "bash /tmp/setup-dns.sh"
 done
@@ -313,7 +313,7 @@ sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
 cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 
 systemctl daemon-reload
-#systemctl enable etcd
+systemctl enable etcd
 systemctl start etcd
 sleep 10
 
@@ -326,6 +326,7 @@ wget -q --timestamping \
 "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-controller-manager" \
 "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-scheduler" \
 "https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
+#FIXME https://dl.k8s.io/v1.15.12/kubernetes-server-linux-amd64.tar.gz
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
@@ -378,6 +379,7 @@ for NODE in $(awk -F ' ' '{print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${GITDIR}/scripts/prepare-worker.sh\
 			${KUBECONFDIR}/kubelet-config.yaml\
+			${KUBECONFDIR}/cni*\
 	    ${KUBECONFDIR}/kubelet-service.systemd.unit\
 	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
