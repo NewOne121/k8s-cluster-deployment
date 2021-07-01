@@ -52,6 +52,10 @@ cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
 cp ~/containerd.config.toml /etc/containerd/config.toml
 cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
+###CNI & Contanerd
+mkdir -p /etc/cni/net.d
+cp ~/cni.conf ~/cni-loopback.conf /etc/cni/net.d
+
 swapoff -a
 systemctl stop firewalld iptables
 systemctl disable firewalld iptables
