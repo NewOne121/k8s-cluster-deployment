@@ -9,7 +9,7 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 # Prerequisite (Before you go)
 
 1. Configured linux VMs with hosts(dns) configuration (see config/k8s_nodes)
-2. 2 network interfaces on each VM (NAT for external connections + Host only for internal networking. Default cluster CIDR 10.245.0.0/16)
+2. 2 network interfaces on each VM (NAT for external connections + Host only for internal networking. Default cluster CIDR 10.200.0.0/16)
 3. Note that I'm using contanerd as a container runtime
 
 `In development` 
