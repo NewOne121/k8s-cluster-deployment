@@ -378,6 +378,7 @@ for NODE in $(awk -F ' ' '{print $2}' "${GITDIR}"/config/k8s_nodes);
 do
 	scp ${GITDIR}/scripts/prepare-worker.sh\
 			${KUBECONFDIR}/kubelet-config.yaml\
+			${KUBECONFDIR}/cni*\
 	    ${KUBECONFDIR}/kubelet-service.systemd.unit\
 	    ${KUBECONFDIR}/kube-proxy-config.yaml\
 	    ${KUBECONFDIR}/kube-proxy.systemd.unit\
