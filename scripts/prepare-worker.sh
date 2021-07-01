@@ -52,6 +52,8 @@ cp ~/kube-proxy.systemd.unit /etc/systemd/system/kube-proxy.service
 cp ~/containerd.config.toml /etc/containerd/config.toml
 cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 
+systemctl stop firewalld iptables
+systemctl disable firewalld iptables
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy
 systemctl start kubelet kube-proxy

@@ -313,7 +313,7 @@ sed -ri 's#CONTROLLER_IP#'${CONTROLLER_IP}'#g' ${KUBECONFDIR}/etcd.systemd.unit
 cp ${KUBECONFDIR}/etcd.systemd.unit /etc/systemd/system/etcd.service
 
 systemctl daemon-reload
-#systemctl enable etcd
+systemctl enable etcd
 systemctl start etcd
 sleep 10
 
