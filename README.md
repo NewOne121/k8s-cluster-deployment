@@ -1,4 +1,4 @@
-# K8S-playground
+# K8S-playground (Current version 1.21.2)
 
 This repository it's like a lab of "Kubenetes the hard way" (https://github.com/kelseyhightower/kubernetes-the-hard-way)<br> 
 I'm building installation scripts of kubernetes on bare-metal/VM's without using GCP as originally proposed.<br>
