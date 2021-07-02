@@ -17,13 +17,15 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 # Components/addons
 * Kube-router (https://github.com/cloudnativelabs/kube-router)
 * Kubernetes dashboard
+* Coredns (https://github.com/coredns/deployment/tree/master/kubernetes)
 
 # TODO
+* ~~add dashboard~~
 * add cleanup functional for worker nodes
-* add options to create custom number of masters/workers. I.e. increase/deployment flexibility
+* add options to create custom number of masters/workers
 * add auto-check for current context (interactive)
 * optimize containerd setup (add docker option)
-* add dns providers
+* ~~add dns providers~~
 * hide dashboard behind keycloak
 * add tags to nodes representing control loops which installed on each node
 * add RBAC rules
