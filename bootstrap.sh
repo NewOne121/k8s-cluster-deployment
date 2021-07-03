@@ -321,12 +321,13 @@ cd ${WORKFOLDER}
 ###Setup control pane
 mkdir -p /etc/kubernetes/config
 #Get kubernetes binaries
-wget -q --timestamping \
-"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-apiserver" \
-"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-controller-manager" \
-"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-scheduler" \
-"https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl"
-#FIXME https://dl.k8s.io/v1.15.12/kubernetes-server-linux-amd64.tar.gz
+wget -q --timestamping "https://dl.k8s.io/v1.21.2/kubernetes-server-linux-amd64.tar.gz"
+
+tar -xvf kubernetes-server-linux-amd64.tar.gz
+cp kubernetes/server/bin/kube-apiserver .
+cp kubernetes/server/bin/kube-controller-manager .
+cp kubernetes/server/bin/kube-scheduler .
+cp kubernetes/server/bin/kubectl .
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 cp kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
@@ -392,3 +393,6 @@ done
 
 CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
 sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -
+
+###Deploy DNS
+kubectl apply -f ${GITDIR}/addons/dns/coredns.yaml
