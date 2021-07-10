@@ -7,7 +7,8 @@
   "hosts": [
     "vi7.k8s.local",
     "https://vi7.k8s.local",
-    "10.245.0.1"
+    "10.245.0.1",
+    "https://10.245.0.1"
   ],
   "names": [
     {
