@@ -18,6 +18,7 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 * Kube-router (https://github.com/cloudnativelabs/kube-router)
 * Kubernetes dashboard
 * Coredns (https://github.com/coredns/deployment/tree/master/kubernetes)
+* Keycloak + oauth2_proxy for dashboard/services authentication
 
 # TODO
 * ~~add dashboard~~
@@ -26,8 +27,8 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 * add auto-check for current context (interactive)
 * optimize containerd setup (add docker option)
 * ~~add dns providers~~
-* hide dashboard behind keycloak
+* ~~hide dashboard behind keycloak and oauth2-proxy~~
 * add tags to nodes representing control loops which installed on each node
-* add RBAC rules
-* add keycloak for services
+* ~~add RBAC rules~~
+* ~~add keycloak for services~~
 
