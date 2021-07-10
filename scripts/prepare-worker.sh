@@ -1,16 +1,24 @@
 #!/bin/bash
 
+#Disable selinux
 sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+
+#Disable swap
+swapoff -a
+sed -ri 's/(.*)(\/cl-swap)(.*)/#\1\2\3/' /etc/fstab
+
+#Enable ip packages forwarding
+sysctl net.ipv4.ip_forward=1
+
+#Stop any kube components if any
 systemctl stop containerd kubelet kube-proxy
 
 WORKFOLDER="/tmp/kubeconfig"
 mkdir -p ${WORKFOLDER}
-cd ${WORKFOLDER}
+cd ${WORKFOLDER} || echo "Can\'t chdir to workfolder!"
 
+#Install packages
 yum install -y socat conntrack ipset yum-utils device-mapper-persistent-data lvm2
-swapoff -a
-sysctl net.ipv4.ip_forward=1
-
 
 #Get kuberentes binaries
 mkdir -p \
@@ -60,8 +68,8 @@ cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 mkdir -p /etc/cni/net.d
 cp ~/cni.conf ~/cni-loopback.conf /etc/cni/net.d
 
-systemctl stop firewalld iptables
-systemctl disable firewalld iptables
+systemctl stop firewalld
+systemctl disable firewalld
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy
 systemctl start kubelet kube-proxy

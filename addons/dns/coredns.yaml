@@ -58,6 +58,11 @@ data:
         health {
           lameduck 5s
         }
+        hosts {
+        10.245.0.1 vi7a.k8s.local
+          
+        fallthrough
+        }
         ready
         kubernetes cluster.local in-addr.arpa ip6.arpa {
           fallthrough in-addr.arpa ip6.arpa
