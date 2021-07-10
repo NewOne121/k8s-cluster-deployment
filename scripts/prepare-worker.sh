@@ -68,8 +68,8 @@ cp ~/containerd.systemd.unit /etc/systemd/system/containerd.service
 mkdir -p /etc/cni/net.d
 cp ~/cni.conf ~/cni-loopback.conf /etc/cni/net.d
 
-systemctl stop firewalld iptables
-systemctl disable firewalld iptables
+systemctl stop firewalld
+systemctl disable firewalld
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy
 systemctl start kubelet kube-proxy
