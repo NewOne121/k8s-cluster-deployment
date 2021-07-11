@@ -140,7 +140,7 @@ cd ${CERTS_DIR}/kube-proxy\
 #Kubernetes API server
 cd ${CERTS_DIR}/kube-apiserver
 KUBERNETES_PUBLIC_ADDRESS='10.245.0.1,10.33.0.1,10.200.0.1' #FIXME should be same for etcd
-KUBERNETES_HOSTNAMES='kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
+KUBERNETES_HOSTNAMES='kubernetes,vi7a.k8s.local,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local'
 
 cfssl gencert \
   -ca=${CERTS_DIR}/CA/ca.pem \
@@ -397,3 +397,12 @@ sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubec
 
 ###Deploy DNS
 kubectl apply -f ${GITDIR}/addons/dns/coredns.yaml
+
+###Deploy keycloak
+kubectl apply -f ${GITDIR}/addons/keycloak/keycloak.yaml
+
+###Deploy k8s-dashboard
+kubectl create -f ${GITDIR}/addons/k8s-dashboard
+
+###Deploy oauth2-proxy
+kubectl apply -f ${GITDIR}/addons/oauth2-proxy/oauth2-proxy.yaml
