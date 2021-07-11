@@ -15,7 +15,8 @@ echo "echo 'Can't change directory to bootstrap workfolder, exiting.'; kill -9 $
 if [ ! -d ""${WORKFOLDER}"/ssh" ]
 then
 	mkdir -p "$WORKFOLDER"/ssh
-	ssh-keygen -b 2048 -t rsa -f ${WORKFOLDER}/ssh/k8s-management -q -N ""
+	ssh-keygen -C root\@${HOSTNAME} -b 2048 -t rsa -f "${WORKFOLDER}"/ssh/k8s-management -q -N ""
+	cp "${WORKFOLDER}"/ssh/k8s-management* ~/.ssh/ && chmod 0600 ~/.ssh/k8s-management*
 fi
 
 #The cfssl and cfssljson command line utilities will be used to provision a PKI Infrastructure and generate TLS certificates.
@@ -39,7 +40,7 @@ do
 		ADDNODE=$(grep "${NODE}" "${GITDIR}"/config/k8s_nodes)
 		echo "${ADDNODE}" >> /etc/hosts
 	fi
-	ssh-copy-id -o StrictHostKeyChecking=no -i ${WORKFOLDER}/ssh/k8s-management.pub "root@${NODE}" > /dev/null 2>&1\
+	ssh-copy-id -o StrictHostKeyChecking=no -i ~/.ssh/k8s-management "root@${NODE}" > /dev/null 2>&1\
 	&& scp "${GITDIR}"/config/k8s_nodes "${GITDIR}"/scripts/setup-dns.sh ${NODE}:/tmp > /dev/null 2>&1\
 	&& ssh ${NODE} "bash /tmp/setup-dns.sh"
 done
