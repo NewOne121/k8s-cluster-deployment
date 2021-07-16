@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 GITDIR='/opt/git/github/K8S-playground'
 WORKFOLDER='/opt/k8s_bootstrap'
 
@@ -12,10 +14,10 @@ cd ${WORKFOLDER} ||\
 echo "echo 'Can't change directory to bootstrap workfolder, exiting.'; kill -9 $$" | bash
 
 #Generate management ssh key
-if [ ! -d ""${WORKFOLDER}"/ssh" ]
+if [ ! -d \""${WORKFOLDER}"/ssh\" ]
 then
 	mkdir -p "$WORKFOLDER"/ssh
-	ssh-keygen -C root\@${HOSTNAME} -b 2048 -t rsa -f "${WORKFOLDER}"/ssh/k8s-management -q -N ""
+	ssh-keygen -C root\@"${HOSTNAME}" -b 2048 -t rsa -f "${WORKFOLDER}"/ssh/k8s-management -q -N ""
 	cp "${WORKFOLDER}"/ssh/k8s-management* ~/.ssh/ && chmod 0600 ~/.ssh/k8s-management*
 fi
 
@@ -362,16 +364,6 @@ systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 sleep 10
-##Enable heathchecks
-#yum install -y epel-release
-#yum install -y nginx
-#mkdir -p /etc/nginx/sites-enabled
-#sed '/^[\ ]]+include.*/a incelude /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
-#ln -s ${KUBECONFDIR}/kubernetes.default.svc.cluster.local /etc/nginx/sites-enabled/
-#curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
-#
-#sudo systemctl restart nginx
-#sudo systemctl enable nginx
 
 #Create kubelet/apiserver clusterroles
 /usr/local/bin/kubectl apply -f ${KUBECONFDIR}/role/apiserver-to-kubelet.yaml
@@ -392,8 +384,8 @@ do
 	 && ssh ${NODE} "bash ~/prepare-worker.sh"
 done
 
-CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c 'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | \
-sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -
+CLUSTERCIDR=10.200.0.0/16 APISERVER=https://10.245.0.1:6443 sh -c \
+'curl https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/generic-kuberouter-all-features.yaml -o - | sed -e "s;%APISERVER%;$APISERVER;g" -e "s;%CLUSTERCIDR%;$CLUSTERCIDR;g"' | kubectl apply -f -
 
 ###Deploy DNS
 kubectl apply -f ${GITDIR}/addons/dns/coredns.yaml
@@ -402,7 +394,7 @@ kubectl apply -f ${GITDIR}/addons/dns/coredns.yaml
 kubectl apply -f ${GITDIR}/addons/keycloak/keycloak.yaml
 
 ###Deploy k8s-dashboard
-kubectl create -f ${GITDIR}/addons/k8s-dashboard
+kubectl apply -f ${GITDIR}/addons/k8s-dashboard
 
 ###Deploy oauth2-proxy
 kubectl apply -f ${GITDIR}/addons/oauth2-proxy/oauth2-proxy.yaml

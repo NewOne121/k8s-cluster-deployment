@@ -22,13 +22,9 @@ Also, it's attempt to create ready-to-go installation/management script to creat
 
 # TODO
 * ~~add dashboard~~
-* add cleanup functional for worker nodes
-* add options to create custom number of masters/workers
-* add auto-check for current context (interactive)
-* optimize containerd setup (add docker option)
+* add option to choose between docker and containerd as runtime
 * ~~add dns providers~~
 * ~~hide dashboard behind keycloak and oauth2-proxy~~
-* add tags to nodes representing control loops which installed on each node
 * ~~add RBAC rules~~
 * ~~add keycloak for services~~
 

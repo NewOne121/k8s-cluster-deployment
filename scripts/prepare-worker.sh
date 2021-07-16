@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 #Disable selinux
 sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 
@@ -10,7 +12,7 @@ sed -ri 's/(.*)(\/cl-swap)(.*)/#\1\2\3/' /etc/fstab
 #Enable ip packages forwarding
 sysctl net.ipv4.ip_forward=1
 
-#Stop any kube components if any
+#Stop kube components if any
 systemctl stop containerd kubelet kube-proxy
 
 WORKFOLDER="/tmp/kubeconfig"
@@ -73,9 +75,6 @@ systemctl disable firewalld
 systemctl daemon-reload
 systemctl enable kubelet kube-proxy
 systemctl start kubelet kube-proxy
-
-
-
 
 
 
